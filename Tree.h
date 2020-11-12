@@ -6,11 +6,12 @@
 
 using namespace std;
 
+
 template<class Key = int, class Data = int>
 class Tree {  // Класс бинарного дерева
-private:
+protected:
     class Node {
-    private:
+    protected:
         Key key;  // ключ
         Data data;  // данные
 
@@ -51,6 +52,22 @@ private:
     Node *findMinNode(Node *node);  // рекурсивный поиск минимального ключа в дереве
 
     Node *getIndexByKey(Node *node, Key key, int &index);  // рекурсивная функция подсчета порядкогово номера узла
+
+    void fixCount(Node *node);
+
+    int getCount(Node *node);
+
+    Node *rotateRight(Node *node);
+
+    Node *rotateLeft(Node *node);
+
+    Node *insertRoot(Node *node, Key key, Data data);
+
+    Node *insert(Node *node, Key key, Data data, bool &flag);
+
+    Node *join(Node *node1, Node *node2);
+
+    Node *remove(Node *node, Key key, bool &flag);
 
 
 public:
@@ -146,6 +163,10 @@ public:
 
     bool addNode(Key key, Data data);  // добавление данных по ключу
 
+    bool insertNodeRND(Key key, Data data);
+
+    bool removeNodeRND(Key key);
+
     bool removeNode(Key key);  // удаление узла по ключу
 
     void printKeys();  // вывод дерева
@@ -163,6 +184,7 @@ public:
     Tree::Reverse_Iterator rend(); // установка обратного итератера в конец
 
 };
+
 
 template<class Key, class Data>
 Tree<Key, Data>::Reverse_Iterator::Reverse_Iterator(Tree<Key, Data> *tree) {
@@ -502,7 +524,7 @@ typename Tree<Key, Data>::Node *Tree<Key, Data>::addNode(Tree::Node *node, Key k
         } else {
             flag = false;
             return node;
-        };
+        }
     }
 }
 
@@ -730,6 +752,153 @@ typename Tree<Key, Data>::Reverse_Iterator Tree<Key, Data>::rend() {
     Tree<Key, Data>::Reverse_Iterator iterator(this);
     iterator.toBegin();
     return iterator;
+}
+
+template<class Key, class Data>
+void Tree<Key, Data>::fixCount(Tree::Node *node) {
+    node->count = getCount(node->right) + getCount(node->left) + 1;
+}
+
+template<class Key, class Data>
+typename Tree<Key, Data>::Node *Tree<Key, Data>::rotateRight(Tree::Node *node) {
+    if (!node->left) return node;
+    Node *tmp = node->left;
+    node->left = tmp->right;
+    tmp->right = node;
+    tmp->count = node->count;
+    fixCount(node);
+    return tmp;
+}
+
+template<class Key, class Data>
+typename Tree<Key, Data>::Node *Tree<Key, Data>::rotateLeft(Tree::Node *node) {
+    if (!node->right) return node;
+    Node *tmp = node->right;
+    node->right = tmp->left;
+    tmp->left = node;
+    tmp->count = node->count;
+    fixCount(node);
+    return tmp;
+}
+
+template<class Key, class Data>
+typename Tree<Key, Data>::Node *Tree<Key, Data>::insertRoot(Tree::Node *node, Key key, Data data) {
+    if (!node) {
+        node = new Node(key, data);
+        node->count++;
+        return node;
+    }
+    if (key < node->getKey()) {
+        node->left = insertRoot(node->left, key, data);
+        return rotateRight(node);
+    } else {
+        node->right = insertRoot(node->right, key, data);
+        return rotateLeft(node);
+    }
+}
+
+template<class Key, class Data>
+typename Tree<Key, Data>::Node *Tree<Key, Data>::insert(Tree::Node *node, Key key, Data data, bool &flag) {
+    count_view++;
+    if (!root) {
+        node = new Node(key, data);
+        node->count++;
+        root = node;
+        flag = true;
+        return node;
+    }
+    if (!node) {
+        node = new Node(key, data);
+        node->count++;
+        flag = true;
+        return node;
+    }
+    if (key == node->getKey()) {
+        flag = false;
+        count_view--;
+        return node;
+    }
+    if (rand() < RAND_MAX / (node->count + 1)) {
+        bool isRoot = node == root;
+        node = insertRoot(node, key, data);
+        flag = true;
+        root = isRoot ? node : root;
+        return node;
+    }
+    if (key < node->getKey()) {
+        node->left = insert(node->left, key, data, flag);
+    } else {
+        node->right = insert(node->right, key, data, flag);
+    }
+    if (flag) {
+        fixCount(node);
+    }
+    return node;
+}
+
+template<class Key, class Data>
+bool Tree<Key, Data>::insertNodeRND(Key key, Data data) {
+    count_view = 0;
+    bool flag = true;
+    insert(root, key, data, flag);
+    if (flag) size++;
+    return flag;
+}
+
+template<class Key, class Data>
+int Tree<Key, Data>::getCount(Node *node) {
+    if (!node) return 0;
+    return node->count;
+}
+
+template<class Key, class Data>
+typename Tree<Key, Data>::Node *Tree<Key, Data>::join(Tree::Node *node1, Tree::Node *node2) {
+    if (!node1) return node2;
+    if (!node2) return node1;
+    if (rand() / RAND_MAX / (node1->count + node2->count + 1) < node1->count) {
+        node1->right = join(node1->right, node2);
+        fixCount(node1);
+        return node1;
+    } else {
+        node2->left = join(node1, node2->left);
+        fixCount(node2);
+        return node2;
+    }
+}
+
+template<class Key, class Data>
+typename Tree<Key, Data>::Node *Tree<Key, Data>::remove(Node *node, Key key, bool &flag) {
+    count_view++;
+    if (!node) {
+        flag = false;
+        count_view--;
+        return node;
+    }
+    if (key < node->getKey()) {
+        node->left = remove(node->left, key, flag);
+    } else if (key > node->getKey()) {
+        node->right = remove(node->right, key, flag);
+    } else {
+        Node *tmp = join(node->left, node->right);
+        delete node;
+        flag = true;
+        node = tmp;
+    }
+    if (flag) {
+        fixCount(node);
+    }
+    return node;
+}
+
+template<class Key, class Data>
+bool Tree<Key, Data>::removeNodeRND(Key key) {
+    count_view = 0;
+    bool flag = false;
+    remove(root, key, flag);
+    if (flag) {
+        size--;
+    }
+    return flag;
 }
 
 template<class Key, class Data>
