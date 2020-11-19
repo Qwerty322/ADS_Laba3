@@ -20,6 +20,12 @@ ADS_Laba2_BINARY_DIR:STATIC=/Users/Vlad/CLionProjects/ADS_Laba3/cmake-build-debu
 //Value Computed by CMake
 ADS_Laba2_SOURCE_DIR:STATIC=/Users/Vlad/CLionProjects/ADS_Laba3
 
+//Value Computed by CMake
+ADS_Laba3_BINARY_DIR:STATIC=/Users/Vlad/CLionProjects/ADS_Laba3/cmake-build-debug
+
+//Value Computed by CMake
+ADS_Laba3_SOURCE_DIR:STATIC=/Users/Vlad/CLionProjects/ADS_Laba3
+
 //Path to a program.
 CMAKE_ADDR2LINE:FILEPATH=CMAKE_ADDR2LINE-NOTFOUND
 
@@ -163,7 +169,7 @@ CMAKE_PROJECT_DESCRIPTION:STATIC=
 CMAKE_PROJECT_HOMEPAGE_URL:STATIC=
 
 //Value Computed by CMake
-CMAKE_PROJECT_NAME:STATIC=ADS_Laba2
+CMAKE_PROJECT_NAME:STATIC=ADS_Laba3
 
 //Path to a program.
 CMAKE_RANLIB:FILEPATH=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib
