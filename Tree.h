@@ -512,14 +512,12 @@ typename Tree<Key, Data>::Node *Tree<Key, Data>::addNode(Tree::Node *node, Key k
     if (root == nullptr) {
         Node *tmp = new Node(key, data);
         tmp->count++;
-        size++;
         root = tmp;
         return tmp;
     }
     if (node == nullptr) {
         Node *tmp = new Node(key, data);
         tmp->count++;
-        size++;
         return tmp;
     } else {
         if (key < node->getKey()) {
