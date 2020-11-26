@@ -583,6 +583,9 @@ bool Tree<Key, Data>::addNode(Key key, Data data) {
     count_view = 0;
     bool flag = true;
     root = addNode(root, key, data, flag);
+    if (flag) {
+        size++;
+    }
     return flag;
 }
 
