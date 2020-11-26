@@ -27,7 +27,7 @@ private:
 
 public:
 
-    ~RNDTree() = default;;
+    ~RNDTree() = default;
 
     bool addNode(Key key, Data data);
 

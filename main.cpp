@@ -102,6 +102,8 @@ void test_ord(int n) {
         m[i] = i * 10000;
         RandTree.addNode(m[i], 1);
     }
+//    RandTree.printTree();
+//    cout << endl;
 //вывод размера дерева до теста
     cout << "items count:" << RandTree.getSize() << endl;
 //обнуление счётчиков трудоёмкости вставки, удаления и поиска
@@ -117,13 +119,16 @@ void test_ord(int n) {
             int k = LineRand() % (10000 * n);
             k = k + !(k % 2);    //случайный нечётный ключ
             RandTree.removeNode(k);
+//            cout << "Remove with 10% (" << i << endl;
             D += RandTree.getViewNode();
             RandTree.addNode(m[rand() % n], 1);
+//            cout << "Add with 10% (" << i << endl;
             I += RandTree.getViewNode();
             k = LineRand() % (10000 * n);
             k = k + !(k % 2);    // случайный нечётный ключ
             try {
                 RandTree.getData(k);
+//                cout << "Get with 10% (" << i << endl;
                 S += RandTree.getViewNode();
             }
                 //обработка исключения при ошибке операции поиска
@@ -132,20 +137,25 @@ void test_ord(int n) {
         {
             int ind = rand() % n;
             RandTree.removeNode(m[ind]);
+//            cout << "Remove with 90% (" << i << endl;
             D += RandTree.getViewNode();;
             int k = LineRand() % (10000 * n);
             k = k + k % 2;        // случайный чётный ключ
             RandTree.addNode(k, 1);
+//            cout << "Add with 90% (" << i << endl;
             I += RandTree.getViewNode();;
             m[ind] = k;
             try {
                 RandTree.getData(m[rand() % n]);
+//                cout << "Get with (90% (" << i << endl;
                 S += RandTree.getViewNode();;
             }
                 //обработка исключения при ошибке операции поиска
             catch (runtime_error e) { S += RandTree.getViewNode(); }
         }
     }
+//    RandTree.printTree();
+//    cout << endl;
 //вывод результатов:
 // вывод размера дерева после теста
     cout << "items count:" << RandTree.getSize() << endl;

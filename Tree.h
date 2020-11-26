@@ -523,13 +523,12 @@ typename Tree<Key, Data>::Node *Tree<Key, Data>::addNode(Tree::Node *node, Key k
         return tmp;
     } else {
         if (key < node->getKey()) {
-            node->count++;
             node->left = addNode(node->left, key, data, flag);
-
+            if (flag) node->count++;
             return node;
         } else if (key > node->getKey()) {
-            node->count++;
             node->right = addNode(node->right, key, data, flag);
+            if (flag) node->count++;
             return node;
         } else {
             flag = false;
@@ -583,7 +582,7 @@ template<class Key, class Data>
 bool Tree<Key, Data>::addNode(Key key, Data data) {
     count_view = 0;
     bool flag = true;
-    addNode(root, key, data, flag);
+    root = addNode(root, key, data, flag);
     return flag;
 }
 
@@ -692,7 +691,7 @@ template<class Key, class Data>
 bool Tree<Key, Data>::removeNode(Key key) {
     count_view = 0;
     bool flag = false;
-    removeNode(root, key, flag);
+    root = removeNode(root, key, flag);
     if (!flag) {
         size--;
     }
